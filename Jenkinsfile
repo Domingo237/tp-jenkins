@@ -2,21 +2,28 @@ pipeline {
     agent any
 
     stages {
-        stage('Bienvenue') {
+
+        stage('Checkout') {
             steps {
-                echo 'Bienvenue dans Jenkins'
+                echo 'Projet récupéré depuis GitHub'
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Compilation simulée'
+                bat 'dir'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Tests réussis'
+                bat 'if exist index.html (echo index.html trouvé) else (exit 1)'
+            }
+        }
+
+        stage('Archive') {
+            steps {
+                archiveArtifacts artifacts: 'index.html', fingerprint: true
             }
         }
 
@@ -24,6 +31,16 @@ pipeline {
             steps {
                 echo 'Déploiement simulé'
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline terminé avec succès.'
+        }
+
+        failure {
+            echo 'Le pipeline a échoué.'
         }
     }
 }
